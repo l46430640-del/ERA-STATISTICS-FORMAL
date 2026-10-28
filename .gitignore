@@ -1,0 +1,20 @@
+# Only proof sources, pinned configuration, and verification tooling are tracked.
+*
+!/.gitignore
+!/.gitattributes
+!/README.md
+!/LICENSE
+!/lean-toolchain
+!/lakefile.toml
+!/lake-manifest.json
+!/BianchiIX.lean
+!/Audit.lean
+!/BianchiIX/
+!/BianchiIX/**/
+!/BianchiIX/**/*.lean
+!/scripts/
+!/scripts/check_sources.py
+!/scripts/fetch_mathlib_cache.py
+!/.github/
+!/.github/workflows/
+!/.github/workflows/verify.yml

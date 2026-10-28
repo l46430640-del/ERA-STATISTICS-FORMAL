@@ -1,0 +1,62 @@
+name: Verify Lean proofs
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lean-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    env:
+      LEAN_NUM_THREADS: 2
+      MATHLIB_NO_CACHE_ON_UPDATE: 1
+    steps:
+      - name: Check out sources
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Check source inventory
+        run: python3 scripts/check_sources.py
+      - name: Install the pinned Lean toolchain
+        uses: leanprover/lean-action@fe408643ea7367d8c0404a8be3975bb145f5fb64 # v1
+        with:
+          auto-config: false
+          build: false
+          test: false
+          lint: false
+          use-mathlib-cache: false
+          use-github-cache: false
+      - name: Restore project build cache
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: .lake/build
+          key: proofs-${{ runner.os }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-${{ github.sha }}
+          restore-keys: proofs-${{ runner.os }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-
+      - name: Fetch the required upstream cache
+        run: python3 scripts/fetch_mathlib_cache.py
+      - name: Build every proof module
+        run: lake --wfail build BianchiIX
+      - name: Audit all project axiom dependencies
+        run: lake env lean -j2 -DwarningAsError=true Audit.lean
+      - name: Replay the final theorem module
+        run: lake env leanchecker BianchiIX.Statistics.FullMeasureStatistics
+      - name: Record verification
+        run: |
+          {
+            printf '## Lean verification passed\n\n'
+            printf 'Commit: `%s`\n\n' "$GITHUB_SHA"
+            printf 'All project modules built with warnings treated as errors.\n\n'
+            printf 'All project declarations passed the recursive axiom audit.\n\n'
+            printf 'The final theorem module passed kernel replay.\n\n'
+            printf 'The Birkhoff and Brehm propositions remain explicit theorem hypotheses.\n'
+          } >> "$GITHUB_STEP_SUMMARY"
