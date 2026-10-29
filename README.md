@@ -98,7 +98,6 @@ The final command replays the final theorem module with Lean's kernel checker.
 The [verification workflow](.github/workflows/verify.yml) runs these checks on
 GitHub. Results are retained in the repository's
 [Actions history](https://github.com/l46430640-del/ERA-STATISTICS-FORMAL/actions/workflows/verify.yml).
-Repository access is currently restricted, so these links require authorization.
 
 ## Source Organization
 
