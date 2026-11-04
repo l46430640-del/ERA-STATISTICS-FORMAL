@@ -1,5 +1,7 @@
 # Era Statistics for the Vacuum Bianchi IX Flow
 
+[![Verify Lean proofs](https://github.com/l46430640-del/ERA-STATISTICS-FORMAL/actions/workflows/verify.yml/badge.svg?branch=main)](https://github.com/l46430640-del/ERA-STATISTICS-FORMAL/actions/workflows/verify.yml)
+
 Lean 4 proofs concerning era statistics for the exact normalized vacuum
 Bianchi IX equations with zero cosmological constant.
 
@@ -98,6 +100,8 @@ The final command replays the final theorem module with Lean's kernel checker.
 The [verification workflow](.github/workflows/verify.yml) runs these checks on
 GitHub. Results are retained in the repository's
 [Actions history](https://github.com/l46430640-del/ERA-STATISTICS-FORMAL/actions/workflows/verify.yml).
+Each run identifies the exact commit checked and reports the build, recursive
+axiom audit, and final theorem kernel replay. The badge above links to these runs.
 
 ## Source Organization
 
